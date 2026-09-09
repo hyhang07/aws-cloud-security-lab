@@ -1,0 +1,42 @@
+===================================================================================
+                   AWS ENTERPRISE CLOUD SECURITY LAB ARCHITECTURE
+===================================================================================
+
+                                 AWS Cloud Account
++---------------------------------------------------------------------------------+
+|                                                                                 |
+|  +-------------------------+             +----------------------------------+   |
+|  |     Root Account        |             |      IAM Admin User (MFA)        |   |
+|  |  (Isolated & Locked)    |             |       "cloud-sec-admin"          |   |
+|  +------------+------------+             +----------------+-----------------+   |
+|               |                                           |                     |
+|               | (Break-Glass Only)                        | (Daily Ops / API)   |
+|               v                                           |                     |
+|    [ AWS Billing Budget ] <-------------------------------+                     |
+|    (Zero-Spend Alerts)                                    v                     |
+|                                             [ AWS Infrastructure / VPC ]        |
+|                                             - Security Group: sec-admin-sg      |
+|                                               (Inbound Port 22: Admin IP Only)  |
+|                                                           |                     |
+|                                                           | (API Audit Stream)  |
+|                                                           v                     |
+|                                                [ AWS CloudTrail (Multi-Region) ]|
+|                                                - Log File Validation: ENABLED   |
+|                                                - Global Management Events       |
+|                                                           |                     |
+|                                       +-------------------+------------------+  |
+|                                       | (Archival / Cold) | (Real-Time Stream)  |
+|                                       v                   v                  |  |
+|                                [ Secure S3 Bucket ]   [ CloudWatch Logs ]    |  |
+|                                - Log Integrity Active - Log Analytics/SIEM  |  |
+|                                - SSE-S3 Encrypted     - Metric Filters (IDS) |  |
+|                                                       - Threat Detections   |  |
++---------------------------------------------------------------------------------+
+
+===================================================================================
+                               SECURITY CONTROLS MAPPING
+===================================================================================
+ Layer 1 (Preventative) : Root MFA, Admin Partitioning, Stateful SG (Port 22 /32)
+ Layer 2 (Detective)    : Multi-Region CloudTrail, SHA-256 Log Integrity, CloudWatch
+ Layer 3 (Corrective)   : Metric Filters Alerting, Automated Python Boto3 CSPM Auditor
+===================================================================================
