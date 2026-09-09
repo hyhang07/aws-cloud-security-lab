@@ -1,0 +1,32 @@
+{
+  "MetricFilters": [
+    {
+      "FilterName": "S3PublicAlterationFilter",
+      "FilterPattern": "{ ($.eventName = \"PutBucketPublicAccessBlock\" || $.eventName = \"PutBucketPolicy\") && ($.userIdentity.type != \"AssumedRole\") }",
+      "MetricTransformations": [
+        {
+          "MetricName": "PublicS3ModificationEvent",
+          "MetricNamespace": "CloudSecurity/S3",
+          "MetricValue": "1",
+          "DefaultValue": 0.0,
+          "Unit": "Count"
+        }
+      ],
+      "Description": "Monitors CloudTrail logs for mutations to S3 Block Public Access (BPA) controls and wildcard bucket policies, filtering out assumed service roles to minimize false positives."
+    },
+    {
+      "FilterName": "IAMPrivilegeEscalationFilter",
+      "FilterPattern": "{ $.eventName = \"CreatePolicyVersion\" || $.eventName = \"AttachUserPolicy\" || $.eventName = \"PutUserPolicy\" }",
+      "MetricTransformations": [
+        {
+          "MetricName": "IAMHighRiskApiCall",
+          "MetricNamespace": "CloudSecurity/IAM",
+          "MetricValue": "1",
+          "DefaultValue": 0.0,
+          "Unit": "Count"
+        }
+      ],
+      "Description": "Triggers immediate telemetry upon detecting high-risk IAM privilege escalation primitives commonly utilized to bypass Least Privilege boundaries."
+    }
+  ]
+}
