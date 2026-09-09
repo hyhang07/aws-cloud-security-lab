@@ -1,0 +1,27 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Sensitive AWS credentials & local config files (CRITICAL)
+.env
+*.pem
+credentials
+config
+secret_keys.txt
+*.csv
+
+# OS generated files
+.DS_Store
+Thumbs.db
